@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link, Switch, Route, BrowserRouter as Router} from 'react-router-dom';
+import {Link, Switch, Route, BrowserRouter as Router, useRouteMatch, useParams} from 'react-router-dom';
 
 function App() {
   return (
@@ -20,17 +20,19 @@ function App() {
               <Link to='/users'>Users</Link>
             </li>
             <li>
-              <Link to='/'><Home/></Link>
+              <Link to='/topics'>Topics</Link>
             </li>
           </ul>
         </nav>
       </div>
 
-      {/* <Switch> */}
+      <Switch>
         <Route path='/about'><About/></Route>
         <Route path='/contact'><Contact/></Route>
         <Route path='/users'><Users/></Route>
-      {/* </Switch> */}
+        <Route exact path='/'><Home/></Route>
+        <Route path='/topics'><Topics/></Route>
+      </Switch>
     </Router>
   );
 }
@@ -51,10 +53,61 @@ function Contact(): React.ReactElement {
     <div>Contact</div>
   )
 }
+
 function Users(): React.ReactElement {
   return (
     <div>Users</div>
   )
+}
+
+function InnerComponent(): React.ReactElement {
+  const match = useRouteMatch();
+  console.log('inner component: ', match);
+  return (
+    <div></div>
+  )
+}
+
+function Topic(): React.ReactElement {
+  let {topicId} : {topicId : string} = useParams();
+  let match = useRouteMatch();
+  console.log('match Topic: ', match);
+  return (
+    <div>
+      <h3>{topicId}</h3>
+      <ul>
+        <li>
+          <Link to={`${match.url}/inner-component`}>Inner Component of {topicId}</Link>
+        </li>
+      </ul>
+      <Switch>
+        <Route path={`${match.url}/inner-component`}><InnerComponent/></Route>
+      </Switch>
+    </div>
+  );
+}
+
+function Topics(): React.ReactElement {
+  let match = useRouteMatch();
+  console.log(match);
+  return (
+    <div>
+      <h2>Topics</h2>
+
+      <ul>
+        <li>
+          <Link to={`${match.url}/components`}>Components</Link>
+        </li>
+        <li>
+          <Link to={`${match.url}/todos`}>Todos</Link>
+        </li>
+      </ul>
+      <Switch>
+        <Route path={`${match.path}/:topicId`}><Topic/></Route>
+        <Route path={`${match.url}`}>Select topic</Route>
+      </Switch>
+    </div>
+  );
 }
 
 export default App;
