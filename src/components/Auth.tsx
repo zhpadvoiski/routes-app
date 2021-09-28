@@ -1,5 +1,5 @@
 import React, {createContext, useContext, useState} from 'react';
-import {BrowserRouter as Router, Switch, Link, Route, Redirect} from 'react-router-dom';
+import {BrowserRouter as Router, Switch, Link, Route, Redirect, useLocation, useHistory} from 'react-router-dom';
 
 // interface IState {
 //     user: null | string;
@@ -65,7 +65,7 @@ const fakeAuth = {
     }
 }
 
-function PrivateRoute({children, path, ...rest} : {children : any, path : string}){
+function PrivateRoute({children, path} : {children : any, path : string}){
     let auth = useAuth();
     return (
         <Route path={path} render={({location}) => 
@@ -73,10 +73,32 @@ function PrivateRoute({children, path, ...rest} : {children : any, path : string
         } /> 
     )
 }
+
+interface ILocation{
+    from : {
+        pathname: string;
+    };
+}
+
 function LoginPage() : React.ReactElement{
-    console.log('login page')
+    let location = useLocation<ILocation>();
+    let history = useHistory();
+    let auth = useAuth();
+
+    let { from } = location.state || {from : {pathname: '/'}};
+
+    console.log(from);
+    const login = () => {
+        auth.signin(() => {
+            history.replace(from);
+        })
+    }
+    
     return (
-        <h1>This is a Login Page</h1>
+        <div>
+            <p>You must be logged in to view page at {from.pathname}</p>
+            <button onClick={login}>Login</button>
+        </div>
     )
 }
 
