@@ -1,39 +1,44 @@
 import React from 'react';
 import {Link, Switch, Route, BrowserRouter as Router, useRouteMatch, useParams} from 'react-router-dom';
+import Auth from './components/Auth';
 
 function App() {
   return (
-    <Router>
-      <div className="App">
-        <nav>
-          <ul>
-            <li>
-              <Link to='/'>Home</Link>
-            </li>
-            <li>
-              <Link to='/about'>About</Link>
-            </li>
-            <li>
-              <Link to='/contact'>Contact</Link>
-            </li>
-            <li>
-              <Link to='/users'>Users</Link>
-            </li>
-            <li>
-              <Link to='/topics'>Topics</Link>
-            </li>
-          </ul>
-        </nav>
-      </div>
+    <div>
+      <Router>
+        <div className="App">
+          <nav>
+            <ul>
+              <li>
+                <Link to='/'>Home</Link>
+              </li>
+              <li>
+                <Link to='/about'>About</Link>
+              </li>
+              <li>
+                <Link to='/contact'>Contact</Link>
+              </li>
+              <li>
+                <Link to='/users'>Users</Link>
+              </li>
+              <li>
+                <Link to='/topics'>Topics</Link>
+              </li>
+            </ul>
+          </nav>
+        </div>
 
-      <Switch>
-        <Route path='/about'><About/></Route>
-        <Route path='/contact'><Contact/></Route>
-        <Route path='/users'><Users/></Route>
-        <Route exact path='/'><Home/></Route>
-        <Route path='/topics'><Topics/></Route>
-      </Switch>
-    </Router>
+        <Switch>
+          <Route path='/about'><About/></Route>
+          <Route path='/contact'><Contact/></Route>
+          <Route path='/users'><Users/></Route>
+          <Route exact path='/'><Home/></Route>
+          <Route path='/topics'><Topics/></Route>
+        </Switch>
+      </Router>
+
+      <Auth />
+      </div>
   );
 }
 

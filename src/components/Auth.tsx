@@ -1,4 +1,5 @@
 import React, {createContext, useContext, useState} from 'react';
+import {BrowserRouter as Router, Switch, Link, Route, Redirect} from 'react-router-dom';
 
 // interface IState {
 //     user: null | string;
@@ -43,10 +44,11 @@ function useProvideAuth(){
     }
 }
 
-function ProvideAuth({children} : {children : React.ReactChildren}){
+function ProvideAuth({children}: {children: any}){
     const auth = useProvideAuth();
     return (
         <AuthContext.Provider value={auth}>
+            {children}
         </AuthContext.Provider>
     )
 }
@@ -61,4 +63,51 @@ const fakeAuth = {
         fakeAuth.isAuthenticated = false;
         setTimeout(cb, 100);
     }
+}
+
+function PrivateRoute({children, path, ...rest} : {children : any, path : string}){
+    let auth = useAuth();
+    return (
+        // @ts-ignore
+        <Route {...rest} render={({location}) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+            auth.user ? children : <Redirect to='/login' />
+        }} />
+    )
+}
+function LoginPage() : React.ReactElement{
+    console.log('login page')
+    return (
+        <h1>This is a Login Page</h1>
+    )
+}
+
+export default function AuthComponent() : React.ReactElement{
+    return (
+        <ProvideAuth>
+            <Router>
+                <div>
+                    <ul>
+                        <li>
+                            <Link to='/public'>Public Page</Link>
+                        </li>
+                        <li>
+                            <Link to='/private'>Private Page</Link>
+                        </li>
+                    </ul>
+                </div>
+                <Switch>
+                    <Route path='/public'>
+                        <h1>This is a Public Page</h1>
+                    </Route>
+                    <PrivateRoute path='/private'>
+                        <h1>This is a Private Page</h1>
+                    </PrivateRoute>
+                    <Route path='/login'>
+                        <LoginPage/>
+                    </Route>
+                </Switch>
+            </Router>
+        </ProvideAuth>
+    );
 }
