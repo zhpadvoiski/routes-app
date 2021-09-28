@@ -68,11 +68,9 @@ const fakeAuth = {
 function PrivateRoute({children, path, ...rest} : {children : any, path : string}){
     let auth = useAuth();
     return (
-        // @ts-ignore
-        <Route {...rest} render={({location}) => {
-            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-            auth.user ? children : <Redirect to='/login' />
-        }} />
+        <Route path={path} render={({location}) => 
+            auth.user ? children : <Redirect to={{pathname: 'login', state: {from: location}}} />
+        } /> 
     )
 }
 function LoginPage() : React.ReactElement{
