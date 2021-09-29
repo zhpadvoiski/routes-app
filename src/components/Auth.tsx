@@ -57,10 +57,12 @@ const fakeAuth = {
     isAuthenticated: false,
     signin(cb : any){
         fakeAuth.isAuthenticated = true;
+        console.log(fakeAuth);
         setTimeout(cb, 100);
     },
     signout(cb : any){
         fakeAuth.isAuthenticated = false;
+        console.log(fakeAuth);
         setTimeout(cb, 100);
     }
 }
@@ -90,7 +92,7 @@ function LoginPage() : React.ReactElement{
     console.log(from);
     const login = () => {
         auth.signin(() => {
-            history.replace(from);
+            history.push(from);
         })
     }
     
@@ -102,10 +104,29 @@ function LoginPage() : React.ReactElement{
     )
 }
 
+function AuthButton(){
+    let auth = useAuth();
+    let history = useHistory();
+
+    const signout = () => {
+        auth.signout(() => {
+            history.push('/');
+        });
+    }
+    
+   return auth.user ? (<div>
+       <p>Welcome!</p>
+       <button onClick={signout}>Sign Out</button>
+   </div>) : (<div>
+       <p>You are not logged in!</p>
+   </div>)
+}
+
 export default function AuthComponent() : React.ReactElement{
     return (
         <ProvideAuth>
             <Router>
+                <AuthButton />
                 <div>
                     <ul>
                         <li>
